@@ -35,13 +35,6 @@ export default function App() {
       env.SUPABASE_ANON_TOKEN!)
   );
 
-  const signUp = () => {
-    supabase.auth.signUp({
-      email: "sociallogin76@gmail.com",
-      password: "super32",
-    })
-  }
-
   const signIn = () => {
     supabase.auth.signInWithPassword({
       email: "sociallogin76@gmail.com",
@@ -62,7 +55,7 @@ export default function App() {
       </head>
       <body>
         <Link to={`/signup`}>Sign Up</Link>
-        <Link to={`/signin`}>Sign In</Link>
+        <Link to={`/login`}>Sign In</Link>
         <Link to={`signout`}>Sign Out</Link>
         
         <Outlet />

@@ -2,11 +2,11 @@ import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js'
 
-import { redirect } from "@remix-run/node";
+import { redirect, json } from "@remix-run/node";
 
 import {
-  useLoaderData,
-  Form
+  Form,
+  useActionData
 } from "@remix-run/react";
 
 export const loader = () => {
@@ -32,36 +32,41 @@ export const action = async ({ request }) => {
     env.SUPABASE_URL!, 
     env.SUPABASE_ANON_TOKEN!)
 
-  supabase.auth.signUp({
+  const {data, error} = await supabase.auth.signInWithPassword({
     email: email,
     password: password,
-  })
+  });
+  
+  console.log("AUTH:RESULTXX: ", error, data);
 
-  return redirect("/dashboard");
+  if(!error) {
+    return redirect("/dashboard");
+  }
+  return error;
 };
 
-export default function Signup() {
-  const {env} = useLoaderData();
-
-  const emailRef = useRef();
-  const passwordRef = useRef();
+export default function Login() {
+  const error = useActionData();
 
   return (
     <>
       <Form method='post'>
         <label htmlFor="input-email">Email</label>
-        <input id="input-email" name="email" type="email" ref={emailRef} />
+        <input id="input-email" name="email" type="email"  />
 
         <label htmlFor="input-password">Password</label>
-        <input id="input-password" name="password" type="password" ref={passwordRef} />
+        <input id="input-password" name="password" type="password" />
 
         <br />
 
-        <button type="submit">Sign up</button>
+        <button type="submit">Login</button>
       </Form>
 
+      {error && <h2>{<pre>{error.message}</pre>}</h2>}
+      
+
       <p>
-        Already have an account? <Link to="/login">Log In</Link>
+        Need an account <Link to="/signup">Sign Up</Link>
       </p>
     </>
   )
