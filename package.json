@@ -20,7 +20,9 @@
     "isbot": "^3.6.5",
     "morgan": "^1.10.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "remix-auth": "^3.2.1",
+    "remix-auth-form": "^1.1.1"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.13.0",

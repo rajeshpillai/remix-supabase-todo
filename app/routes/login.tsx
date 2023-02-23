@@ -1,73 +1,52 @@
-import { Link } from 'react-router-dom';
-import { createClient } from '@supabase/supabase-js'
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
 
-import { redirect } from "@remix-run/node";
+import { auth, sessionStorage } from "~/services/auth.server";
 
-import {
-  Form,
-  useActionData
-} from "@remix-run/react";
-
-export const loader = () => {
-  const env = {
-    SUPABASE_URL: process.env.SUPABASE_URL!,
-    SUPABASE_ANON_TOKEN: process.env.SUPABASE_ANON_TOKEN!,
-  };
-  return {env};
-}
-
-export const action = async ({ request }) => {
-  const env = {
-    SUPABASE_URL: process.env.SUPABASE_URL!,
-    SUPABASE_ANON_TOKEN: process.env.SUPABASE_ANON_TOKEN!,
-  };
-
-  const formData = await request.formData();
-
-  const email = formData.get("email");
-  const password = formData.get("password");
-
-  const supabase = createClient(
-    env.SUPABASE_URL!, 
-    env.SUPABASE_ANON_TOKEN!)
-
-  const {data, error} = await supabase.auth.signInWithPassword({
-    email: email,
-    password: password,
+export const action = async ({ request }: ActionArgs) => {
+  await auth.authenticate("form", request, {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login",
   });
-  
-  console.log("AUTH:RESULT: ", error, data);
-
-  if(!error) {
-    console.log("Redirecting to dashboard...");
-    return redirect("/dashboard");
-  }
-  return error;
 };
 
-export default function Login() {
-  const error = useActionData();
+type LoaderError = { message: string } | null;
+export const loader = async ({ request }: LoaderArgs) => {
+  await auth.isAuthenticated(request, { successRedirect: "/dashboard" });
+  const session = await sessionStorage.getSession(
+    request.headers.get("Cookie")
+  );
+  const error = session.get(auth.sessionErrorKey) as LoaderError;
+  return json({ error });
+};
+
+export default function Screen() {
+  const { error } = useLoaderData<typeof loader>();
 
   return (
-    <>
-      <Form method='post'>
-        <label htmlFor="input-email">Email</label>
-        <input id="input-email" name="email" type="email"  />
+    <Form method="post">
+      {error ? <div>{error.message}</div> : null}
+      <div>
+        <label htmlFor="email">Email</label>
+        <input
+          type="email"
+          name="email"
+          id="email"
+        />
+      </div>
 
-        <label htmlFor="input-password">Password</label>
-        <input id="input-password" name="password" type="password" />
+      <div>
+        <label htmlFor="password">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          defaultValue="test"
+        />
+      </div>
 
-        <br />
-
-        <button type="submit">Login</button>
-      </Form>
-
-      {error && <h2>{<pre>{error.message}</pre>}</h2>}
-      
-
-      <p>
-        Need an account <Link to="/signup">Sign Up</Link>
-      </p>
-    </>
-  )
+      <button>Log In</button>
+    </Form>
+  );
 }

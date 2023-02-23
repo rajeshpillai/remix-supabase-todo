@@ -27,7 +27,6 @@ export default function App() {
       <body>
         <Link to={`/signup`}>Sign Up</Link>| 
         <Link to={`/login`}>Sign In</Link>|
-        <Link to={`/logout`}>Logout</Link>
         <hr/>
         <Outlet />
         <ScrollRestoration />
