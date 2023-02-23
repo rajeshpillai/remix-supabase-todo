@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js'
 
-import { redirect, json } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
 import {
   Form,
@@ -36,9 +36,10 @@ export const action = async ({ request }) => {
     password: password,
   });
   
-  console.log("AUTH:RESULTXX: ", error, data);
+  console.log("AUTH:RESULT: ", error, data);
 
   if(!error) {
+    console.log("Redirecting to dashboard...");
     return redirect("/dashboard");
   }
   return error;

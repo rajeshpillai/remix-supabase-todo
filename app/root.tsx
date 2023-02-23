@@ -1,7 +1,4 @@
-import {useState} from 'react';
 import type { MetaFunction } from "@remix-run/node";
-import { createClient } from '@supabase/supabase-js';
-import { redirect } from "@remix-run/node";
 
 
 import {
@@ -12,7 +9,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "@remix-run/react";
 
 export const meta: MetaFunction = () => ({
@@ -29,10 +25,10 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Link to={`/signup`}>Sign Up</Link>
-        <Link to={`/login`}>Sign In</Link>
+        <Link to={`/signup`}>Sign Up</Link>| 
+        <Link to={`/login`}>Sign In</Link>|
         <Link to={`/logout`}>Logout</Link>
-        
+        <hr/>
         <Outlet />
         <ScrollRestoration />
         <Scripts />
