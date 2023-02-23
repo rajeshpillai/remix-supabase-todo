@@ -1,6 +1,9 @@
 import {useState} from 'react';
 import type { MetaFunction } from "@remix-run/node";
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
+import { redirect } from "@remix-run/node";
+
+
 import {
   Link,
   Links,
@@ -18,35 +21,7 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
-export const loader = () => {
-  const env = {
-    SUPABASE_URL: process.env.SUPABASE_URL!,
-    SUPABASE_ANON_TOKEN: process.env.SUPABASE_ANON_TOKEN!,
-  };
-
-  return {env};
-}
-
 export default function App() {
-  const {env} = useLoaderData();
-  const [supabase] = useState(() => 
-    createClient(
-      env.SUPABASE_URL!, 
-      env.SUPABASE_ANON_TOKEN!)
-  );
-
-  const signIn = () => {
-    supabase.auth.signInWithPassword({
-      email: "sociallogin76@gmail.com",
-      password: "super32",
-    })
-  }
-
-  const signOut = () => {
-    supabase.auth.signOut();
-  }
-
-
   return (
     <html lang="en">
       <head>
@@ -56,7 +31,7 @@ export default function App() {
       <body>
         <Link to={`/signup`}>Sign Up</Link>
         <Link to={`/login`}>Sign In</Link>
-        <Link to={`signout`}>Sign Out</Link>
+        <Link to={`/logout`}>Logout</Link>
         
         <Outlet />
         <ScrollRestoration />
