@@ -7,10 +7,11 @@ export const loader = async () => {
   const supabase = createClient(
     process.env.SUPABASE_URL!, 
     process.env.SUPABASE_ANON_TOKEN!);
-    const {data} = await supabase.from("test").select();
-    return {
-      data
-    }
+    
+  const {data} = await supabase.from("test").select();
+  return {
+    data
+  }
 };
 
 export default function Dashboard() {
